@@ -1,0 +1,9 @@
+[general]
+name=PrecisionCursor
+description=Gives you a button to switch the mouse cursor to a high precision pointer
+about=especially useful where standard map tools give you only imprecise cursors with unclear hotspot, like the "open hand" cursor for panning  
+version=0.1
+qgisMinimumVersion=3.0
+author=Matthias Jacobs
+email=matthias-jacobs@gmx.net
+repository=URL to the code repository
