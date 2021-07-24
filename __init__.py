@@ -16,11 +16,11 @@
 from PyQt5.QtWidgets import QAction, QMessageBox
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-import PrecisionCursor.resources
+
+from . import resources
 
 def classFactory(iface):
     return PrecisionCursorPlugin(iface)
-
 
 class PrecisionCursorPlugin:
     def __init__(self, iface):
