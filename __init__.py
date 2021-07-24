@@ -1,7 +1,6 @@
-#-----------------------------------------------------------
-# PrecisionCursor - sets mouse cursor to an arrow shape for precise clicks, 
-# anywhere you want it.
-#
+"""PrecisionCursor plugin for QGIS - sets mouse cursor to an arrow shape for precise clicks, 
+anywhere you want it."""
+#----------------------------------------------------------
 # Copyright (C) 2021 Matthias Jacobs
 # based upon "Minimal Plugin" by Martin Dobias
 #-----------------------------------------------------------
@@ -22,6 +21,7 @@ from . import resources
 def classFactory(iface):
     return PrecisionCursorPlugin(iface)
 
+
 class PrecisionCursorPlugin:
     def __init__(self, iface):
         self.iface = iface
@@ -32,35 +32,22 @@ class PrecisionCursorPlugin:
         self.action.setIcon(myicon)        
         self.action.setToolTip("Switches the mouse cursor to a precision arrow")
         
-        self.action.triggered.connect(self.newrun)
-#        self.action.toggled.connect(self.run)
+        self.action.triggered.connect(self.run)
         self.action.setCheckable(True)
         self.iface.addToolBarIcon(self.action)
+
 
     def unload(self):
         QGuiApplication.instance().restoreOverrideCursor()
         self.iface.removeToolBarIcon(self.action)
         del self.action
 
-    def newrun(self,signal):
-# diagn        QMessageBox.information(None, 'PreciCursor', 'Toggled: '+str(signal))
+
+    def run(self,signal):
         if signal==True :
             QGuiApplication.instance().setOverrideCursor(Qt.ArrowCursor)
-# diagn            QMessageBox.information(None, 'Precision cursor plugin', 'Precision Cursor activated!')
         elif signal==False :
-# diagn            QMessageBox.information(None, 'Precision cursor plugin', 'Precision Cursor deactivated!')
             QGuiApplication.instance().restoreOverrideCursor()
-
-
-
-    def run(self):
-        if self.action.checked==1 :
-#            QGuiApplication.instance().setOverrideCursor(Qt.ArrowCursor)
-            QMessageBox.information(None, 'Precision cursor plugin', 'Precision Cursor activated!')
-        elif self.action.checked==0 :
-            QMessageBox.information(None, 'Precision cursor plugin', 'Precision Cursor deactivated!')
-#            QGuiApplication.instance().restoreOverrideCursor()
-
 
 
 
