@@ -45,7 +45,11 @@ class PrecisionCursorPlugin:
 
     def run(self,signal):
         if signal==True :
-            QGuiApplication.instance().setOverrideCursor(Qt.ArrowCursor)
+            # ":/icons/PrecisionMouseCursor-png"
+            mycursorpixmap=QPixmap(":/icons/PrecisionMouseCursor-png")
+            mymousecursor=QCursor(mycursorpixmap,15,15)
+#            QGuiApplication.instance().setOverrideCursor(Qt.CrossCursor)
+            QGuiApplication.instance().setOverrideCursor(mymousecursor)
         elif signal==False :
             QGuiApplication.instance().restoreOverrideCursor()
 
