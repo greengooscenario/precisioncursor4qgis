@@ -5,7 +5,7 @@ PrecisionCursor Plugin for QGIS
 What does it do?
 ----------------
 
-PrecisionCursor is a little plugin for QGIS that turns the mouse cursor into a plain arrow, facilitating precision pointing wherever you need it.
+PrecisionCursor is a little plugin for QGIS that turns the mouse cursor into a plain arrow with a crosshair marker, facilitating precision pointing wherever you need it.
 
 Once the plugin is activated, it shows a new button in the Plugins toolbar (light blue with a white arrow cursor). When you press the button, the mouse cursor turns into an arrow, no matter how it lookes before. Nothing else changes; the previously active map tool remains active.
 When you press the PrecisionCursor button again, the mouse cursor turns back into whatever it looks like normally.
