@@ -4,8 +4,13 @@ icon=graphics/PrecisionCursorIcon4.png
 description=Gives you a button to switch the mouse cursor to a high precision pointer
 about=especially useful where standard map tools give you only imprecise cursors with unclear hotspot, like the "open hand" cursor for panning
 license=GPLv2 or later
-tags=canvas,map,digitizing,georeference,match,maptool,tool,pan,zoom,productivity,python
-version=0.1f
+<<<<<<< HEAD
+tags=canvas,map,digitizing,georeference,match,maptool,tool,pan,zoom,productivity,gui,interface
+version=0.2B
+=======
+tags=canvas,map,digitizing,georeference,match,maptool,tool,pan,zoom,productivity,python,gui,interface
+version=0.2A
+>>>>>>> 09dd1024fc17da4dca3d94d96fd6a6548c4ee49b
 qgisMinimumVersion=3.0
 author=Matthias Jacobs
 email=pggs@posteo.de
