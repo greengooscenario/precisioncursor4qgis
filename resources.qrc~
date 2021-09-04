@@ -1,7 +1,0 @@
-  <!DOCTYPE RCC>
-<RCC version="1.0">
-    <qresource prefix="icons">
-	<file alias="PrecisionCursorIcon-png">graphics/PrecisionCursorIcon07.png</file>
-	<file alias="PrecisionMouseCursor-png">graphics/PrecisionMouseM07.png</file>
-    </qresource>
-</RCC>
