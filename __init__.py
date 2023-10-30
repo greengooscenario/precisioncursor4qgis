@@ -29,7 +29,7 @@ def classFactory(iface):
 class PrecisionCursorPlugin:
 	def __init__(self, iface):
 		self.parentInterface = iface
-		#self.parentInterface.messageBar().pushMessage('Note', 'Initiating PrecisionCursor Plugin...') # <- diagnostic, remove
+		self.parentInterface.messageBar().pushMessage('Note', 'Initiating PrecisionCursor Plugin...') # <- TODO: diagnostic, remove
 	
 	
 	def initGui(self):
@@ -39,6 +39,7 @@ class PrecisionCursorPlugin:
 		self.scanFiles()
 		if self.s.value("PreciCursorPlugin/pointerChoice", 10000) == 10000: # pointerChoice does not exist, no pointer has been chosen yet
 			self.s.setValue("PreciCursorPlugin/pointerChoice", 0)
+			self.parentInterface.messageBar().pushMessage('Note', 'No previous choice of mouse pointer known, initiating to System Standard Arrow')
 		
 		## Generate main button
 		self.switchOn = QAction('Mouse cursor shape override', self.parentInterface.mainWindow())
@@ -46,7 +47,8 @@ class PrecisionCursorPlugin:
 		#iconPath = (self.s.value("PreciCursorPlugin/pointerFileName" + self.s.value( "PreciCursorPlugin/pointerChoice", 0).__str__())) # <- this variant changes the main button icon based on cursor choice
 		myIcon = QIcon(iconPath)
 		self.switchOn.setIcon(myIcon)
-		self.switchOn.setToolTip('Switches the mouse cursor to a configurable pointer')
+		self.switchOn.setToolTip('Pointer: ' + self.s.value("PreciCursorPlugin/pointerChoice", 10000))
+		#self.switchOn.setToolTip('Switches the mouse cursor to a configurable pointer')
 		#self.switchOn.setStatusTip('Mouse cursor override active!')
 		self.switchOn.setCheckable(True)
 		self.switchOn.triggered.connect(self.run)
