@@ -146,29 +146,16 @@ class PrecisionCursorPlugin:
 	
 	def run(self, signal):
 		if signal == True:
+			#self.parentInterface.messageBar().pushMessage("Note","PreciCursor activated with value " + self.s.value("PreciCursorPlugin/pointerChoice"))
 			if self.s.value("PreciCursorPlugin/pointerChoice") == -1:
 				myMouseCursor = Qt.ArrowCursor
 			elif self.s.value("PreciCursorPlugin/pointerChoice") == -2:
 				myMouseCursor = Qt.CrossCursor
 			else:
-				#try:
 				myCursorPixMap = QPixmap(self.s.value("PreciCursorPlugin/pointerFileName" + self.s.value("PreciCursorPlugin/pointerChoice", 0).__str__()))
-				"""except:
-					self.parentInterface.messageBar().pushMessage("Error", 'PrecisionCursor Plugin: Failed to load pointer file' + self.s.value("PreciCursorPlugin/pointerFileName" + self.s.value("PreciCursorPlugin/pointerChoice", 0).__str__() ), level=Qgis.Critical)
-					QGuiApplication.instance().restoreOverrideCursor()
-					return
-				"""
-				#try:
 				xKey = "PreciCursorPlugin/hotspotX" + self.s.value("PreciCursorPlugin/pointerChoice", 0).__str__()
 				yKey = "PreciCursorPlugin/hotspotY" + self.s.value("PreciCursorPlugin/pointerChoice", 0).__str__()
 				myMouseCursor = QCursor(myCursorPixMap, int(self.s.value(xKey, 0)), int(self.s.value(yKey, 0)))
-				"""
-				except:
-					self.parentInterface.messageBar().pushMessage("Error", 'PrecisionCursor Plugin: Something seems '
-					'to have gone terribly wrong. Sorry.', level=Qgis.Critical)
-					QGuiApplication.instance().restoreOverrideCursor()
-					return
-				"""
 			QGuiApplication.instance().restoreOverrideCursor()
 			QGuiApplication.instance().setOverrideCursor(myMouseCursor)
 		elif signal == False:
