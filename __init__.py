@@ -16,7 +16,7 @@ for precise clicks, anytime you want it."""
 import os
 
 from PyQt5.QtWidgets import QAction, QActionGroup, QToolButton, QMenu
-from PyQt5.QtCore import Qt,QSize
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import *
 
 from qgis.core import (Qgis, QgsSettings)
@@ -29,34 +29,35 @@ def classFactory(iface):
 class PrecisionCursorPlugin:
 	def __init__(self, iface):
 		self.parentInterface = iface
-		self.parentInterface.messageBar().pushMessage('Note', 'Initiating PrecisionCursor Plugin...') # <- TODO: diagnostic, remove
+		#self.parentInterface.messageBar().pushMessage('Note', 'Initiating PrecisionCursor Plugin...') # <- diagnostic
 	
 	
 	def initGui(self):
-		## Load settings
+		# Load settings
 		self.s = QgsSettings()
-		## Scan for pointer image files
+		# Scan for pointer image files
 		self.scanFiles()
-		if self.s.value("PreciCursorPlugin/pointerChoice", 10000) == 10000: # pointerChoice does not exist, no pointer has been chosen yet
-			self.s.setValue("PreciCursorPlugin/pointerChoice", 0)
-			self.parentInterface.messageBar().pushMessage('Note', 'No previous choice of mouse pointer known, initiating to System Standard Arrow')
+		self.choice = int(self.s.value("PreciCursorPlugin/pointerChoice", 0))
+		# ^ Note well: Changing this QgsSetting in the middle of the code
+		# produces hard-to-track errors! Better use a normal variable, and only
+		# save the setting in the unload procedure.
 		
-		## Generate main button
+		# Generate main button
 		self.switchOn = QAction('Mouse cursor shape override', self.parentInterface.mainWindow())
 		iconPath = os.path.join(os.path.dirname(__file__), 'graphics','PrecisionCursorIcon07.png')
 		#iconPath = (self.s.value("PreciCursorPlugin/pointerFileName" + self.s.value( "PreciCursorPlugin/pointerChoice", 0).__str__())) # <- this variant changes the main button icon based on cursor choice
 		myIcon = QIcon(iconPath)
 		self.switchOn.setIcon(myIcon)
-		self.switchOn.setToolTip('Pointer: ' + self.s.value("PreciCursorPlugin/pointerChoice", 10000))
-		#self.switchOn.setToolTip('Switches the mouse cursor to a configurable pointer')
+		self.switchOn.setToolTip('Switches the mouse cursor to a configurable pointer')
 		#self.switchOn.setStatusTip('Mouse cursor override active!')
 		self.switchOn.setCheckable(True)
-		self.switchOn.triggered.connect(self.run)
-		#self.switchOn.toggled.connect(self.run) # "hovered" and "changed" may also be worth a try?
-		## Have the Cursor palette initiated based on the settings
+		#self.switchOn.triggered.connect(self.run)
+		self.switchOn.toggled.connect(self.run) # "hovered" and "changed" may also be worth a try?
+		# Have the Cursor palette initiated based on the settings
 		palette = self.initSelectionMenu()
 		self.switchOn.setMenu(palette)
 		
+		# generate a button, bind the main QAction to it and install to toolbar
 		switchOnButton = QToolButton()
 		switchOnButton.setPopupMode(QToolButton.MenuButtonPopup)
 		switchOnButton.setDefaultAction(self.switchOn)
@@ -90,7 +91,7 @@ class PrecisionCursorPlugin:
 		selectionMenu.setTearOffEnabled(True)
 		selectionGroup = QActionGroup(selectionMenu)
 		
-		## Generate an entry for the system standard ArrowCursor:
+		# Generate an entry for the system standard ArrowCursor:
 		sysStdArrow = QAction('Standard Arrow', self.parentInterface.mainWindow())
 		
 		arrowIconPath = os.path.join(os.path.dirname(__file__), 'graphics', 'SysStdArrowIcon03.png')
@@ -103,7 +104,7 @@ class PrecisionCursorPlugin:
 		selectionGroup.addAction(sysStdArrow)
 		selectionMenu.addAction(sysStdArrow)
 		
-		## Generate an entry for the system standard CrossCursor:
+		# Generate an entry for the system standard CrossCursor:
 		sysStdCross = QAction('Standard Cross', self.parentInterface.mainWindow())
 		
 		crossIconPath = os.path.join(os.path.dirname(__file__), 'graphics', 'SysStdCrossIcon03.png')
@@ -118,7 +119,8 @@ class PrecisionCursorPlugin:
 		
 		i = 0
 		actionList = []
-		while self.s.value("PreciCursorPlugin/pointerFileName" + str(i), None) != None: # we walk through the stored settings pointerFileName0, pointerFileName1, ...
+		# we walk through the stored settings pointerFileName0, pointerFileName1, ...:
+		while self.s.value("PreciCursorPlugin/pointerFileName" + str(i), None) != None:
 			actionList.append(QAction("Pointer " + str(i), self.parentInterface.mainWindow()))
 			actionList[i].setToolTip(f'Pointer {i}: ' + self.s.value("PreciCursorPlugin/pointerFileName" + str(i), 'X'))
 			actionList[i].setCheckable(True)
@@ -132,30 +134,40 @@ class PrecisionCursorPlugin:
 			selectionMenu.addAction(actionList[i])
 
 			i += 1
-		#i = 1000 # <- diagnostic: helps to detect python's quaint handling of i
+		#i = 1000 # <- diagnostic: should never become relevant,
+		# but sometimes does => helps to detect python's quaint handling of i
+		
+		# make the previously chosen cursor option checked:
+		if self.choice == -1:
+			sysStdArrow.setChecked(True)
+		elif self.choice == -2:
+			sysStdCross.setChecked(True)
+		else:
+			actionList[int(self.choice)].setChecked(True)
 		return selectionMenu
 	
 	
 	def processCursorChoice(self, chk, choice):
 		if chk == True:
-			self.s.setValue("PreciCursorPlugin/pointerChoice", choice)
-			#self.switchOn.trigger()
+			self.choice = int(choice)
+			self.switchOn.setChecked(False)
 			self.switchOn.setChecked(True)
-			self.run(True)
+			#self.run(True) # if you go without the "setChecked(False)" above,
+			# you need to run self.run to get the cursor switched when the button is already activated
 	
 	
 	def run(self, signal):
 		if signal == True:
-			#self.parentInterface.messageBar().pushMessage("Note","PreciCursor activated with value " + self.s.value("PreciCursorPlugin/pointerChoice"))
-			if self.s.value("PreciCursorPlugin/pointerChoice") == -1:
+			if self.choice == -1:
 				myMouseCursor = Qt.ArrowCursor
-			elif self.s.value("PreciCursorPlugin/pointerChoice") == -2:
+			elif self.choice == -2:
 				myMouseCursor = Qt.CrossCursor
 			else:
-				myCursorPixMap = QPixmap(self.s.value("PreciCursorPlugin/pointerFileName" + self.s.value("PreciCursorPlugin/pointerChoice", 0).__str__()))
-				xKey = "PreciCursorPlugin/hotspotX" + self.s.value("PreciCursorPlugin/pointerChoice", 0).__str__()
-				yKey = "PreciCursorPlugin/hotspotY" + self.s.value("PreciCursorPlugin/pointerChoice", 0).__str__()
+				myCursorPixMap = QPixmap(self.s.value("PreciCursorPlugin/pointerFileName" + self.choice.__str__()))
+				xKey = "PreciCursorPlugin/hotspotX" + self.choice.__str__()
+				yKey = "PreciCursorPlugin/hotspotY" + self.choice.__str__()
 				myMouseCursor = QCursor(myCursorPixMap, int(self.s.value(xKey, 0)), int(self.s.value(yKey, 0)))
+			# now we do what we've come for:
 			QGuiApplication.instance().restoreOverrideCursor()
 			QGuiApplication.instance().setOverrideCursor(myMouseCursor)
 		elif signal == False:
@@ -164,5 +176,8 @@ class PrecisionCursorPlugin:
 	
 	def unload(self):
 		QGuiApplication.instance().restoreOverrideCursor()
+		# save our choice of pointer:
+		self.s.setValue("PreciCursorPlugin/pointerChoice", self.choice)
+
 		self.ourToolBar.removeAction(self.buttonHandle)
 		del self.switchOn
