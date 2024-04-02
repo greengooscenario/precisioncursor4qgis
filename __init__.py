@@ -33,16 +33,16 @@ class PrecisionCursorPlugin:
 	
 	
 	def initGui(self):
-		# Load settings
+		# Load settings:
 		self.s = QgsSettings()
-		# Scan for pointer image files
+		# Scan for pointer image files:
 		self.scanFiles()
 		self.choice = int(self.s.value("PreciCursorPlugin/pointerChoice", 0))
-		# ^ Note well: Changing this QgsSetting in the middle of the code
+		# ^ NOTE WELL: Changing this QgsSetting in the middle of the code
 		# produces hard-to-track errors! Better use a normal variable, and only
 		# save the setting in the unload procedure.
 		
-		# Generate main button
+		# Generate main button:
 		self.switchOn = QAction('Mouse cursor shape override', self.parentInterface.mainWindow())
 		iconPath = os.path.join(os.path.dirname(__file__), 'graphics','PrecisionCursorIcon07.png')
 		#iconPath = (self.s.value("PreciCursorPlugin/pointerFileName" + self.s.value( "PreciCursorPlugin/pointerChoice", 0).__str__())) # <- this variant changes the main button icon based on cursor choice
@@ -53,11 +53,11 @@ class PrecisionCursorPlugin:
 		self.switchOn.setCheckable(True)
 		#self.switchOn.triggered.connect(self.run)
 		self.switchOn.toggled.connect(self.run) # "hovered" and "changed" may also be worth a try?
-		# Have the Cursor palette initiated based on the settings
+		# Have the Cursor palette initiated based on the settings:
 		palette = self.initSelectionMenu()
 		self.switchOn.setMenu(palette)
 		
-		# generate a button, bind the main QAction to it and install to toolbar
+		# generate a button, bind the main QAction to it and install to toolbar:
 		switchOnButton = QToolButton()
 		switchOnButton.setPopupMode(QToolButton.MenuButtonPopup)
 		switchOnButton.setDefaultAction(self.switchOn)
@@ -67,7 +67,7 @@ class PrecisionCursorPlugin:
 	
 	def scanFiles(self):
 		"""
-		scans for .png-files the "pointers" dir and saves them as settings
+		scans for .png-files in the "pointers" dir and saves them as settings
 		:return: a string with the first pointer filename and the number of pointer files found, or "Fail!".
 		"""
 		self.s = QgsSettings()
