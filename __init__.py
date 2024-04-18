@@ -73,12 +73,31 @@ class PrecisionCursorPlugin:
 		self.s = QgsSettings()
 		i = 0
 		for path, directories, files in os.walk(os.path.join(os.path.dirname(__file__), "pointers")):
-			for file in files:
+			sortedfiles = sorted(files)
+			for file in sortedfiles:
 				if file.upper().endswith('PNG'):
+					"""
+					Pointer files should be named as follows:
+					PrefixForSorting.NameToDisplay.InternalRemarks.X_coordinate_of_hotspot.Y_coordinate_of_hotspot.png
+					DisplayName gets displayed in the user interface, InternalRemarks are not displayed, and the last two parts are the coordinates of the pointers hotspot/point of action.
+					"""
+					fileprop = file.split(".")
+					try:
+						y_hotspot = int(fileprop[-2])
+						x_hotspot = int(fileprop[-3])
+					except:
+						x_hotspot = 15
+						y_hotspot = 15
+					try:
+						pointer_name = str(fileprop[1])
+					except:
+						pointer_name = str(file)
 					self.s.setValue("PreciCursorPlugin/pointerFileName" + str(i), os.path.join(path, file))
-					self.s.setValue("PreciCursorPlugin/hotspotX" + str(i), int(15))
-					self.s.setValue("PreciCursorPlugin/hotspotY" + str(i), int(15))
+					self.s.setValue("PreciCursorPlugin/pointerName" + str(i), pointer_name)
+					self.s.setValue("PreciCursorPlugin/hotspotX" + str(i), int(x_hotspot))
+					self.s.setValue("PreciCursorPlugin/hotspotY" + str(i), int(y_hotspot))
 					i += 1
+		# Just in case there used to be one more pointer file in the past:
 		self.s.remove("PreciCursorPlugin/pointerFileName" + str(i))
 		self.s.remove("PreciCursorPlugin/hotspotX" + str(i))
 		self.s.remove("PreciCursorPlugin/hotspotY" + str(i))
@@ -92,7 +111,7 @@ class PrecisionCursorPlugin:
 		selectionGroup = QActionGroup(selectionMenu)
 		
 		# Generate an entry for the system standard ArrowCursor:
-		sysStdArrow = QAction('Standard Arrow', self.parentInterface.mainWindow())
+		sysStdArrow = QAction('System Standard Arrow', self.parentInterface.mainWindow())
 		
 		arrowIconPath = os.path.join(os.path.dirname(__file__), 'graphics', 'SysStdArrowIcon03.png')
 		arrowIcon = QIcon(arrowIconPath)
@@ -105,7 +124,7 @@ class PrecisionCursorPlugin:
 		selectionMenu.addAction(sysStdArrow)
 		
 		# Generate an entry for the system standard CrossCursor:
-		sysStdCross = QAction('Standard Cross', self.parentInterface.mainWindow())
+		sysStdCross = QAction('System Standard Cross', self.parentInterface.mainWindow())
 		
 		crossIconPath = os.path.join(os.path.dirname(__file__), 'graphics', 'SysStdCrossIcon03.png')
 		crossIcon = QIcon(crossIconPath)
@@ -121,7 +140,8 @@ class PrecisionCursorPlugin:
 		actionList = []
 		# we walk through the stored settings pointerFileName0, pointerFileName1, ...:
 		while self.s.value("PreciCursorPlugin/pointerFileName" + str(i), None) != None:
-			actionList.append(QAction("Pointer " + str(i), self.parentInterface.mainWindow()))
+			#actionList.append(QAction("Pointer " + str(i), self.parentInterface.mainWindow()))
+			actionList.append(QAction(self.s.value("PreciCursorPlugin/pointerName" + str(i), 'Pointer ' + str(i)), self.parentInterface.mainWindow()))
 			actionList[i].setToolTip(f'Pointer {i}: ' + self.s.value("PreciCursorPlugin/pointerFileName" + str(i), 'X'))
 			actionList[i].setCheckable(True)
 			iconPath = (self.s.value("PreciCursorPlugin/pointerFileName" + str(i)))

@@ -1,0 +1,3 @@
+- remove 1000000 pixel limit on cursor size
+- Guideline / Ruler cursor with adjustable line length
+- configuration dialog to change the display sequence of the cursors and to install arbitrary PNG files as cursors
