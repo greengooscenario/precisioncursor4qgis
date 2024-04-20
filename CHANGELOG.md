@@ -1,3 +1,5 @@
+### 1.1.B
+Expanded "about" section and tag list in metadata to reflect the latest addition of large ruler cursors
 
 ### 1.1.A
 Extra cursor shapes: Five 999x999px Line Crosses with hotspots in center and all four corners, as well as horizontal / vertical guideline cursors in 4HD format
