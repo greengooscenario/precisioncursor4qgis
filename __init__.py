@@ -163,7 +163,11 @@ class PrecisionCursorPlugin:
 		elif self.choice == -2:
 			sysStdCross.setChecked(True)
 		else:
-			actionList[int(self.choice)].setChecked(True)
+			try:
+				actionList[int(self.choice)].setChecked(True) #todo: for some reason, an index-out-of-range error may occure here. Why?
+			except:
+				self.parentInterface.messageBar().pushMessage('Note', 'Previously chosen cursor choice "' + str(self.choice) + '" appears to be invalid. Falling back to standard.')
+				sysStdArrow.setChecked(True)
 		return selectionMenu
 	
 	

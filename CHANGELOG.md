@@ -1,3 +1,7 @@
+### 1.1.C
+Bugfix:
+"actionList[int(self.choice)].setChecked(True)" (line 167) produced an index-out-of-range error (on Windows 11). Wrote a try..except around it. Produces a screen notice when the error occurs.
+
 ### 1.1.B
 Expanded "about" section and tag list in metadata to reflect the latest addition of large ruler cursors
 
