@@ -1,3 +1,6 @@
+### 1.1.D
+new release solely to clear the "experimental" flag in the plugin repository
+
 ### 1.1.C
 Bugfix:
 "actionList[int(self.choice)].setChecked(True)" (line 167) produced an index-out-of-range error (on Windows 11). Wrote a try..except around it. Produces a screen notice when the error occurs.
