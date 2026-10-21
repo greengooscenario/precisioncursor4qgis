@@ -15,9 +15,11 @@ for precise clicks, anytime you want it."""
 
 import os
 
-from PyQt5.QtWidgets import QAction, QActionGroup, QToolButton, QMenu
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import *
+from qgis.PyQt.QtWidgets import QToolButton, QMenu
+from .qt_compat import CURSOR_ARROW, CURSOR_CROSS, QAction, TOOLBUTTON_POPUP_MENU_BUTTON
+from .qt_compat import QActionGroup
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import *
 
 from qgis.core import (Qgis, QgsSettings)
 
@@ -59,7 +61,7 @@ class PrecisionCursorPlugin:
 		
 		# generate a button, bind the main QAction to it and install to toolbar:
 		switchOnButton = QToolButton()
-		switchOnButton.setPopupMode(QToolButton.MenuButtonPopup)
+		switchOnButton.setPopupMode(TOOLBUTTON_POPUP_MENU_BUTTON)
 		switchOnButton.setDefaultAction(self.switchOn)
 		self.ourToolBar = self.parentInterface.pluginToolBar()
 		self.buttonHandle = self.ourToolBar.addWidget(switchOnButton)
@@ -183,9 +185,9 @@ class PrecisionCursorPlugin:
 	def run(self, signal):
 		if signal == True:
 			if self.choice == -1:
-				myMouseCursor = Qt.ArrowCursor
+				myMouseCursor = CURSOR_ARROW
 			elif self.choice == -2:
-				myMouseCursor = Qt.CrossCursor
+				myMouseCursor = CURSOR_CROSS
 			else:
 				myCursorPixMap = QPixmap(self.s.value("PreciCursorPlugin/pointerFileName" + self.choice.__str__()))
 				xKey = "PreciCursorPlugin/hotspotX" + self.choice.__str__()
