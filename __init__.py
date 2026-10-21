@@ -56,8 +56,8 @@ class PrecisionCursorPlugin:
 		#self.switchOn.triggered.connect(self.run)
 		self.switchOn.toggled.connect(self.run) # "hovered" and "changed" may also be worth a try?
 		# Have the Cursor palette initiated based on the settings:
-		palette = self.initSelectionMenu()
-		self.switchOn.setMenu(palette)
+		self.selectionMenu = self.initSelectionMenu()
+		self.switchOn.setMenu(self.selectionMenu)
 		
 		# generate a button, bind the main QAction to it and install to toolbar:
 		switchOnButton = QToolButton()
@@ -108,9 +108,10 @@ class PrecisionCursorPlugin:
 	
 	
 	def initSelectionMenu(self):
-		selectionMenu = QMenu()
+		selectionMenu = QMenu(self.parentInterface.mainWindow())
 		selectionMenu.setTearOffEnabled(True)
-		selectionGroup = QActionGroup(selectionMenu)
+		self.selectionGroup = QActionGroup(selectionMenu)
+		selectionGroup = self.selectionGroup
 		
 		# Generate an entry for the system standard ArrowCursor:
 		sysStdArrow = QAction('System Standard Arrow', self.parentInterface.mainWindow())
