@@ -1,3 +1,7 @@
+### 1.2.A
+
+
+
 ### 1.1.D
 new release solely to clear the "experimental" flag in the plugin repository
 
